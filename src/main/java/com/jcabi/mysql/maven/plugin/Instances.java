@@ -34,6 +34,7 @@ import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.log.VerboseRunnable;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -264,22 +265,35 @@ public final class Instances {
     private File data(final File dist, final File target) throws IOException {
         final File dir = new File(target, DATA_SUB_DIR);
         if (!dir.exists()) {
+            dir.mkdirs();
             final File cnf = new File(target, "my-default.cnf");
             FileUtils.writeStringToFile(
                 cnf,
                 "[mysql]\n# no defaults..."
             );
-            new VerboseProcess(
-                this.builder(
+            ProcessBuilder builder = this.builder(
                     dist,
-                    "scripts/mysql_install_db",
-                    String.format("--defaults-file=%s", cnf),
-                    "--force",
-                    "--innodb_use_native_aio=0",
-                    String.format("--datadir=%s", dir),
-                    String.format("--basedir=%s", dist)
-                )
-            ).stdoutQuietly();
+                    "bin/mysqld",
+                    Instances.NO_DEFAULTS,
+                    "--initialize-insecure",
+                    "--log_error_verbosity=1",
+                    String.format("--basedir=%s", dist),
+                    String.format("--datadir=%s", this.data(dist, target))
+            );
+            Process process = builder.start();
+            try {
+                process.waitFor(3, TimeUnit.SECONDS);
+            }
+            catch (IllegalThreadStateException ex) {
+                Logger.info(this, ex.getMessage() + ", force to exit.");
+            }
+            catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+            finally
+            {
+                process.destroyForcibly();
+            }
         }
         return dir;
     }

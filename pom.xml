@@ -38,7 +38,7 @@
         <version>1.15</version>
     </parent>
     <artifactId>jcabi-mysql-maven-plugin</artifactId>
-    <version>0.9</version>
+    <version>0.9-custom</version>
     <packaging>maven-plugin</packaging>
     <name>jcabi-mysql-maven-plugin</name>
     <description>MySQL plugin for integration testing</description>
@@ -237,29 +237,29 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.jcabi</groupId>
-                                    <artifactId>mysql-dist</artifactId>
-                                    <version>5.6.14</version>
-                                    <classifier>${mysql.classifier}</classifier>
-                                    <type>zip</type>
-                                    <outputDirectory>${project.build.directory}/mysql-dist</outputDirectory>
-                                    <overWrite>false</overWrite>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>unpack</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<artifactItems>-->
+                                <!--<artifactItem>-->
+                                    <!--<groupId>com.jcabi</groupId>-->
+                                    <!--<artifactId>mysql-dist</artifactId>-->
+                                    <!--<version>5.6.14</version>-->
+                                    <!--<classifier>${mysql.classifier}</classifier>-->
+                                    <!--<type>zip</type>-->
+                                    <!--<outputDirectory>${project.build.directory}/mysql-dist</outputDirectory>-->
+                                    <!--<overWrite>false</overWrite>-->
+                                <!--</artifactItem>-->
+                            <!--</artifactItems>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <executions>
@@ -326,6 +326,31 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>custom</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.6</version>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>repo.fractus-tech.com-snapshot</id>
+                    <url>s3://repo.fractus-tech.com/snapshot</url>
+                </snapshotRepository>
+                <repository>
+                    <id>repo.fractus-tech.com-release</id>
+                    <url>s3://repo.fractus-tech.com/release</url>
+                </repository>
+            </distributionManagement>
         </profile>
     </profiles>
 </project>
