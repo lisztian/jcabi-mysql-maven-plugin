@@ -65,7 +65,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 @ToString
 @EqualsAndHashCode(of = "processes")
-@Loggable(Loggable.INFO)
+//@Loggable(Loggable.INFO)
 @SuppressWarnings({ "PMD.DoNotUseThreads", "PMD.TooManyMethods" })
 public final class Instances {
 
@@ -135,7 +135,14 @@ public final class Instances {
                     new Runnable() {
                         @Override
                         public void run() {
-                            Instances.this.stop(config.port());
+                            try
+                            {
+                                Instances.this.stop(config.port(), config, dist, socket);
+                            }
+                            catch (IOException e)
+                            {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 )
@@ -147,8 +154,22 @@ public final class Instances {
      * Stop a running one at this port.
      * @param port The port to stop at
      */
-    public void stop(final int port) {
+    public void stop(int port, final Config config, final File dist, final File socketfile) throws IOException
+    {
         synchronized (this.processes) {
+            final ProcessBuilder builder = this.builder(
+                  dist,
+                  "bin/mysqladmin",
+                  "shutdown",
+                  "--force",
+                  "--show-warnings=false",
+                  String.format("--user=%s", config.user()),
+                  String.format("--password=%s", config.password()),
+                  String.format("--socket=%s", socketfile));
+            Process process = builder.start();
+            VerboseProcess verboseProcess = new VerboseProcess(process);
+            verboseProcess.stdoutQuietly();
+
             final Process proc = this.processes.remove(port);
             if (proc != null) {
                 proc.destroy();
@@ -282,7 +303,7 @@ public final class Instances {
             );
             Process process = builder.start();
             try {
-                process.waitFor(3, TimeUnit.SECONDS);
+                process.waitFor(5, TimeUnit.SECONDS);
             }
             catch (IllegalThreadStateException ex) {
                 Logger.info(this, ex.getMessage() + ", force to exit.");

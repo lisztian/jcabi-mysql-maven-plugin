@@ -35,6 +35,10 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
+import java.io.File;
+import java.io.IOException;
+
+
 /**
  * Stops MySQL.
  *
@@ -52,7 +56,20 @@ public final class StopMojo extends AbstractMysqlMojo {
 
     @Override
     public void run(final Instances instances) throws MojoFailureException {
-        instances.stop(this.config().port());
+        try
+        {
+            File socket;
+            if (this.socketFile() == null) {
+                socket = new File(this.dataDir(), "mysql.sock");
+            } else {
+                socket = this.socketFile();
+            }
+            instances.stop(this.config().port(), this.config(), this.distDir(), socket);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }

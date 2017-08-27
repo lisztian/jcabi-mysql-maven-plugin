@@ -133,7 +133,13 @@ public final class InstancesTest {
                 conn.close();
             }
         } finally {
-            instances.stop(port);
+            instances.stop(port, new Config(
+                  port,
+                  InstancesTest.USER,
+                  InstancesTest.PASSWORD,
+                  InstancesTest.DBNAME,
+                  Collections.<String>emptyList()
+            ), new File(InstancesTest.DIST), null);
         }
     }
 
@@ -187,7 +193,13 @@ public final class InstancesTest {
                 conn.close();
             }
         } finally {
-            instances.stop(port);
+            instances.stop(port, new Config(
+                  port,
+                  InstancesTest.USER,
+                  InstancesTest.PASSWORD,
+                  InstancesTest.DBNAME,
+                  Collections.singletonList("sql-mode=ALLOW_INVALID_DATES")
+            ), new File(InstancesTest.DIST), null);
         }
     }
 
@@ -243,7 +255,13 @@ public final class InstancesTest {
                 conn.close();
             }
         } finally {
-            instances.stop(port);
+            instances.stop(port, new Config(
+                  port,
+                  user,
+                  InstancesTest.PASSWORD,
+                  InstancesTest.DBNAME,
+                  Collections.<String>emptyList()
+            ), new File(InstancesTest.DIST), null);
         }
     }
 
@@ -298,7 +316,13 @@ public final class InstancesTest {
                 conn.close();
             }
         } finally {
-            instances.stop(port);
+            instances.stop(port, new Config(
+                  port,
+                  user,
+                  password,
+                  InstancesTest.DBNAME,
+                  Collections.<String>emptyList()
+            ), new File(InstancesTest.DIST), null);
         }
     }
 
@@ -350,7 +374,13 @@ public final class InstancesTest {
                 conn.close();
             }
         } finally {
-            instances.stop(port);
+            instances.stop(port, new Config(
+                  port,
+                  InstancesTest.USER,
+                  InstancesTest.PASSWORD,
+                  dbname,
+                  Collections.<String>emptyList()
+            ), new File(InstancesTest.DIST), null);
         }
     }
 
@@ -405,7 +435,13 @@ public final class InstancesTest {
                 conn.close();
             }
         } finally {
-            instances.stop(port);
+            instances.stop(port, new Config(
+                  port,
+                  InstancesTest.USER,
+                  InstancesTest.PASSWORD,
+                  InstancesTest.DBNAME,
+                  Collections.<String>emptyList()
+            ), new File(InstancesTest.DIST), null);
         }
     }
 
@@ -463,7 +499,13 @@ public final class InstancesTest {
                 conn.close();
             }
         } finally {
-            instances.stop(port);
+            instances.stop(port, new Config(
+                  port,
+                  InstancesTest.USER,
+                  InstancesTest.PASSWORD,
+                  InstancesTest.DBNAME,
+                  Collections.<String>emptyList()
+            ), new File(InstancesTest.DIST), null);
         }
         this.checkExistingDatabase(target);
     }
@@ -521,7 +563,13 @@ public final class InstancesTest {
                 conn.close();
             }
         } finally {
-            instances.stop(port);
+            instances.stop(port, new Config(
+                  port,
+                  InstancesTest.USER,
+                  InstancesTest.PASSWORD,
+                  InstancesTest.DBNAME,
+                  Collections.<String>emptyList()
+            ), new File(InstancesTest.DIST), null);
         }
     }
 
